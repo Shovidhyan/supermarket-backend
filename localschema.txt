@@ -1,0 +1,58 @@
+PORT=4000
+
+DB_MODE=azure
+
+DB_SERVER=supermarketdb26.database.windows.net
+DB_DATABASE=SuperMarketDB
+DB_USER=useradmin
+DB_PASSWORD=Vidhya77##
+
+DB_ENCRYPT=true
+DB_TRUST_SERVER_CERTIFICATE=true
+
+
+DB_SERVER=(localdb)\MSSQLLocalDB
+DB_DATABASE=SuperMarketDB
+
+# Auth: Left empty because we are using Integrated Security (Windows Auth)
+DB_USER=
+DB_PASSWORD=
+
+# Security Settings
+DB_ENCRYPT=false
+DB_TRUST_SERVER_CERTIFICATE=true
+
+
+
+
+
+
+
+*****************************************************
+const sql = require('mssql/msnodesqlv8');
+require('dotenv').config();
+
+const config = {
+  server: process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
+  driver: 'msnodesqlv8',
+
+  options: {
+    trustedConnection: true,
+    trustServerCertificate: process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',
+    encrypt: process.env.DB_ENCRYPT === 'true'
+  }
+};
+
+const connectDB = async () => {
+  try {
+    const pool = await sql.connect(config);
+    console.log(`✅ Connected to Database: ${config.database}`);
+    return pool;
+  } catch (err) {
+    console.error('❌ Database Connection Failed:', err);
+    process.exit(1); // Stop app if DB fails
+  }
+};
+
+module.exports = { sql, connectDB };
