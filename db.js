@@ -1,47 +1,40 @@
 require('dotenv').config();
 
-const isAzure = process.env.DB_MODE === 'azure';
+const sql = require('mssql');
 
-const sql = isAzure
-  ? require('mssql')
-  : require('mssql/msnodesqlv8');
+const isAzure = process.env.DB_MODE === 'azure';
 
 const config = isAzure
   ? {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    server: process.env.DB_SERVER,
-    database: process.env.DB_DATABASE,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      server: process.env.DB_SERVER,
+      database: process.env.DB_DATABASE,
 
-    options: {
-      encrypt: process.env.DB_ENCRYPT === 'true',
-      trustServerCertificate:
-        process.env.DB_TRUST_SERVER_CERTIFICATE === 'true'
+      options: {
+        encrypt: true,
+        trustServerCertificate: true
+      }
     }
-  }
   : {
-    server: process.env.DB_SERVER,
-    database: process.env.DB_DATABASE,
-    driver: 'msnodesqlv8',
+      server: process.env.DB_SERVER,
+      database: process.env.DB_DATABASE,
 
-    options: {
-      trustedConnection: true,
-      trustServerCertificate:
-        process.env.DB_TRUST_SERVER_CERTIFICATE === 'true',
-      encrypt: process.env.DB_ENCRYPT === 'true'
-    }
-  };
+      options: {
+        trustServerCertificate: true,
+        encrypt: false
+      }
+    };
 
 const connectDB = async () => {
   try {
-    const pool = await sql.connect(config);
+    await sql.connect(config);
 
     console.log(
-      `✅ Connected to ${isAzure ? 'Azure SQL Database' : 'Local SQL Database'
+      `✅ Connected to ${
+        isAzure ? 'Azure SQL Database' : 'Local SQL Database'
       }: ${config.database}`
     );
-
-    return pool;
   } catch (err) {
     console.error('❌ Database Connection Failed:', err);
     process.exit(1);
