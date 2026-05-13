@@ -8,7 +8,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth'); 
 const categoryRoutes = require('./routes/categories'); 
 const subcategoryRoutes = require('./routes/subcategories'); 
-const ProductsRoutes = require('./routes/Products'); // Kept consistent name
+const ProductsRoutes = require('./routes/products'); // Fixed case sensitivity for Linux/Unix
 const wishlistRoutes = require('./routes/wishlist');
 const profileRoutes = require('./routes/profile');
 const deliveryRoutes = require('./routes/deliveryRoutes');
